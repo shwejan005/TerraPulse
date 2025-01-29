@@ -43,3 +43,33 @@ export const getUserByClerkId = query({
     }
 })
 
+
+export const updateLocation = mutation({
+    args: {
+        clerkId: v.string(),
+        location: v.object({
+            latitude: v.number(),
+            longitude: v.number(),
+        }),
+    },
+    handler: async (ctx, args) => {
+        const { clerkId, location } = args;
+
+        // Find the user by Clerk ID
+        const existingUser = await ctx.db
+            .query("users")
+            .filter(q => q.eq(q.field("clerkId"), clerkId))
+            .first();
+
+        if (!existingUser) {
+            throw new Error("User not found");
+        }
+
+        // Only update the location field
+        await ctx.db.patch(existingUser._id, {
+            location: location,  // Update only the location field
+        });
+
+        return { message: "User location updated successfully" };
+    },
+});
