@@ -2,18 +2,28 @@
 import BentoGrid from "@/components/ui/BentoGrid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUser } from "@clerk/nextjs";
-import { CloudSunIcon } from "lucide-react";
+import { CloudSunIcon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BarChart, Cloud, Droplet, Wind } from "react-feather"; // You can use any icon library of your choice
 import { silkScreen } from "../layout";
 
-// Define the weather data type
+// Define the weather data type with the new fields
 type WeatherData = {
+  app_temp: number;
+  aqi: number;
+  city_name: string;
+  country_code: string;
+  datetime: string;
+  weather: { description: string; icon: string };
+  precip: number;
+  pres: number;
+  clouds: number;
   temp: number;
   rh: number;
   wind_spd: number;
-  pres: number;
-  clouds: number;
+  dewpt: number;
+  uv: number;
+  solar_rad: number;
 };
 
 const Home = () => {
@@ -54,18 +64,32 @@ const Home = () => {
   }, [user?.id]);
 
   // Destructure weatherData to access the properties directly
-  const { temp, rh, wind_spd, pres, clouds } = weatherData || {};
+  const { app_temp, aqi, city_name, country_code, datetime, weather, precip, pres, clouds, temp, rh, wind_spd, dewpt, uv, solar_rad } = weatherData || {};
 
   return (
     <main className="min-h-screen container mx-auto p-4 py-8">
-      <div className={`${silkScreen.className} text-xl mt-8 mb-4 text-center text-green-600`}>
-        An AI-powered system that suggests best farming practices based on local agricultural conditions and a farmer-specific marketplace.
+      <div className={`${silkScreen.className} text-3xl mt-8 mb-4 text-center text-green-600`}>
+       WEATHER DETAILS
       </div>
 
       {error && <div className="text-red-600 text-center mb-4">{error}</div>}
 
       {weatherData ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+          {/* City Name & Country Code Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <CloudSunIcon className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Location</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{city_name}, {country_code}</p>
+                <p className="text-lg">{datetime}</p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Temperature Card */}
           <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
             <CardHeader>
@@ -75,32 +99,46 @@ const Home = () => {
             <CardContent>
               <div className="text-center">
                 <p className="text-4xl font-bold">{temp}°C</p>
+                <p>{weather?.description}</p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Humidity Card */}
+          {/* Apparent Temperature Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <CloudSunIcon className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Apparent Temperature</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{app_temp}°C</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Air Quality Index (AQI) Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <CloudSunIcon className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Air Quality Index (AQI)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{aqi}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Precipitation Card */}
           <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <Droplet className="w-6 h-6 text-primary" />
-              <CardTitle className="text-xl">Humidity</CardTitle>
+              <CardTitle className="text-xl">Precipitation</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center">
-                <p className="text-4xl font-bold">{rh}%</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Wind Speed Card */}
-          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
-            <CardHeader>
-              <Wind className="w-6 h-6 text-primary" />
-              <CardTitle className="text-xl">Wind Speed</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <p className="text-4xl font-bold">{wind_spd} m/s</p>
+                <p className="text-4xl font-bold">{precip} mm</p>
               </div>
             </CardContent>
           </Card>
@@ -127,6 +165,71 @@ const Home = () => {
             <CardContent>
               <div className="text-center">
                 <p className="text-4xl font-bold">{clouds}%</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Wind Speed Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <Wind className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Wind Speed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{wind_spd} m/s</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Humidity Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <Droplet className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Humidity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{rh}%</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Dew Point Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <Droplet className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Dew Point</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{dewpt}°C</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* UV Index Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <Sun className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">UV Index</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{uv}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Solar Radiation Card */}
+          <Card className="bg-card/50 hover:shadow-lg transition-all duration-300">
+            <CardHeader>
+              <Sun className="w-6 h-6 text-primary" />
+              <CardTitle className="text-xl">Solar Radiation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <p className="text-4xl font-bold">{solar_rad} W/m²</p>
               </div>
             </CardContent>
           </Card>
