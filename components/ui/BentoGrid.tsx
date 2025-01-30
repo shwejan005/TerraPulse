@@ -85,6 +85,13 @@ export default function FarmAnalyticsGrid() {
               </div>
             </div>
           </CardContent>
+          <div className="flex items-center justify-center text-center">
+            <Link href="/weather">
+              <BubbleButton>
+                Weather Forecast
+              </BubbleButton>
+            </Link>
+          </div>
         </Card>
 
         {/* Marketplace card */}

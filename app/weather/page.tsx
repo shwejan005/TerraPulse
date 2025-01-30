@@ -1,7 +1,9 @@
 'use client'
-import BentoGrid from "@/components/ui/BentoGrid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { api } from "@/convex/_generated/api";
 import { useUser } from "@clerk/nextjs";
+import { useMutation } from "convex/react"; // Import Convex's useMutation hook
 import { CloudSunIcon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BarChart, Cloud, Droplet, Wind } from "react-feather"; // You can use any icon library of your choice
@@ -31,6 +33,9 @@ const Home = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Use the Convex mutation hook
+  const updateWeatherMutation = useMutation(api.weather.updateWeather);
+
   useEffect(() => {
     if (navigator.geolocation && user?.id) {
       navigator.geolocation.getCurrentPosition(
@@ -39,15 +44,34 @@ const Home = () => {
 
           try {
             // Fetch weather data from the backend API, passing in the geolocation
-            const response = await fetch(`https://api.weatherbit.io/v2.0/current?lat=${latitude}&lon=${longitude}&key=7ba7c97e1df04e1393a485f46230dbde`);
-            console.log(`https://api.weatherbit.io/v2.0/current?lat=${latitude}&lon=${longitude}&key=7ba7c97e1df04e1393a485f46230dbde`)
+            const response = await fetch(`https://api.weatherbit.io/v2.0/current?lat=${latitude}&lon=${longitude}&key=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}`);
             const data = await response.json();
 
             if (data.error) {
               setError(data.error);
             } else {
               // Assuming the data structure returned by API matches the expected WeatherData shape
-              setWeatherData(data.data[0]); // Example: assuming API response has `data` array
+              const weather = data.data[0];
+              setWeatherData(weather); // Save weather data to state
+
+              // Update weather details in Convex
+              await updateWeatherMutation({
+                userId: user.id,
+                cityName: weather.city_name,
+                countryCode: weather.country_code,
+                datetime: weather.datetime,
+                weather: weather.weather,
+                temp: weather.temp,
+                appTemp: weather.app_temp,
+                humidity: weather.rh,
+                windSpeed: weather.wind_spd,
+                pressure: weather.pres,
+                cloudCover: weather.clouds,
+                precip: weather.precip,
+                dewpt: weather.dewpt,
+                uvIndex: weather.uv,
+                solarRad: weather.solar_rad,
+              });
             }
           } catch (error) {
             setError("Error fetching weather data");
@@ -61,7 +85,7 @@ const Home = () => {
     } else {
       console.log("Geolocation is not supported or user is not authenticated.");
     }
-  }, [user?.id]);
+  }, [user?.id, updateWeatherMutation]);
 
   // Destructure weatherData to access the properties directly
   const { app_temp, aqi, city_name, country_code, datetime, weather, precip, pres, clouds, temp, rh, wind_spd, dewpt, uv, solar_rad } = weatherData || {};
@@ -236,7 +260,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="text-center mt-8">
-          <BentoGrid /> {/* Hero Section while weather data is loading */}
+          <LoadingSpinner />
         </div>
       )}
     </main>
