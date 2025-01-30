@@ -1,11 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Calendar, ChevronDown, Clock, Filter, Search, Sprout, Users } from 'lucide-react'
+import { Calendar, ChevronDown, Clock, Filter, Search, Sprout, Users } from "lucide-react"
 import { useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -14,54 +15,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"; // Import Label component
+import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-
-
-const categories = [
-  { name: "Fresh Produce", icon: "🥬", count: 156 },
-  { name: "Grains", icon: "🌾", count: 89 },
-  { name: "Fruits", icon: "🍎", count: 124 },
-  { name: "Vegetables", icon: "🥕", count: 178 },
-  { name: "Organic", icon: "🌱", count: 92 },
-  { name: "Seasonal", icon: "🌺", count: 67 },
-]
 
 const products = [
   {
     id: 1,
-    name: "Organic Tomatoes",
-    description: "Fresh, locally grown organic tomatoes from Green Valley Farm",
-    price: 4.99,
-    unit: "kg",
-    rating: 4.8,
-    reviews: 127,
-    image: "/placeholder.svg?height=200&width=200",
-    farmer: "John Smith",
-    farmName: "Green Valley Farm",
-    category: "Vegetables",
-    badge: "Popular",
-    harvestDate: "2024-02-15",
-    queueCount: 12,
-    totalStock: 500,
-    reservedStock: 320,
-  },
-  {
-    id: 2,
     name: "Fresh Sweet Corn",
     description: "Non-GMO sweet corn, harvested at peak ripeness",
     price: 3.49,
     unit: "dozen",
     rating: 4.9,
     reviews: 84,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/images/corn.png",
     farmer: "Maria Garcia",
     farmName: "Sunshine Fields",
     category: "Vegetables",
@@ -72,14 +40,14 @@ const products = [
     reservedStock: 750,
   },
   {
-    id: 3,
+    id: 2,
     name: "Premium Rice",
     description: "Sustainably grown premium rice variety",
     price: 6.99,
     unit: "kg",
     rating: 4.7,
     reviews: 256,
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/images/rice.png",
     farmer: "David Chen",
     farmName: "Golden Paddy Fields",
     category: "Grains",
@@ -88,10 +56,55 @@ const products = [
     totalStock: 2000,
     reservedStock: 1400,
   },
+  {
+    id: 3,
+    name: "Mangoes - Alphonso",
+    description: "Delicious and sweet Alphonso mangoes, harvested from the tropical orchards",
+    price: 8.99,
+    unit: "kg",
+    rating: 4.9,
+    reviews: 102,
+    image: "/images/mango.png",
+    farmer: "Amit Patil",
+    farmName: "Tropical Orchards",
+    category: "Fruits",
+    badge: "Seasonal",
+    harvestDate: "2024-02-05",
+    queueCount: 15,
+    totalStock: 700,
+    reservedStock: 450,
+  },
+  {
+    id: 4,
+    name: "Organic Green Lentils",
+    description: "High-protein organic green lentils, harvested with care for maximum flavor",
+    price: 5.49,
+    unit: "kg",
+    rating: 4.6,
+    reviews: 134,
+    image: "/images/lentils.png",
+    farmer: "Sujata Deshmukh",
+    farmName: "Farmers' Organic Fields",
+    category: "Pulses",
+    badge: "Healthy Choice",
+    harvestDate: "2024-02-20",
+    queueCount: 30,
+    totalStock: 1500,
+    reservedStock: 900,
+  },
+]
+
+const categories = [
+  { name: "Vegetables", icon: "🥕", count: 28 },
+  { name: "Fruits", icon: "🍎", count: 32 },
+  { name: "Grains", icon: "🌾", count: 15 },
+  { name: "Dairy", icon: "🥛", count: 10 },
+  { name: "Meat", icon: "🥩", count: 12 },
+  { name: "Herbs", icon: "🌿", count: 8 },
 ]
 
 interface QueueDialogProps {
-  product: typeof products[0]
+  product: (typeof products)[0]
   onClose: () => void
 }
 
@@ -99,16 +112,14 @@ function QueueDialog({ product, onClose }: QueueDialogProps) {
   const availableStock = product.totalStock - product.reservedStock
   const stockPercentage = (product.reservedStock / product.totalStock) * 100
   const daysUntilHarvest = Math.ceil(
-    (new Date(product.harvestDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+    (new Date(product.harvestDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
   )
 
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>Join Harvest Queue</DialogTitle>
-        <DialogDescription>
-          Reserve your share of the harvest before it's gone
-        </DialogDescription>
+        <DialogDescription>Reserve your share of the harvest before it's gone</DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="space-y-4">
@@ -127,8 +138,7 @@ function QueueDialog({ product, onClose }: QueueDialogProps) {
               </div>
               <div className="text-sm text-muted-foreground">
                 {new Date(product.harvestDate).toLocaleDateString()}
-                <br />
-                ({daysUntilHarvest} days remaining)
+                <br />({daysUntilHarvest} days remaining)
               </div>
             </div>
             <div className="space-y-2">
@@ -138,23 +148,18 @@ function QueueDialog({ product, onClose }: QueueDialogProps) {
               </div>
               <div className="text-sm text-muted-foreground">
                 #{product.queueCount + 1}
-                <br />
-                ({availableStock}kg available)
+                <br />({availableStock}kg available)
               </div>
             </div>
           </div>
         </div>
         <div className="space-y-2">
-          <Label>Reservation Amount (kg)</Label>
-          <Input type="number" min="1" max={availableStock} defaultValue="1" />
-          <p className="text-xs text-muted-foreground">
-            Maximum {availableStock}kg available for reservation
-          </p>
+          <Label htmlFor="reservation-amount">Reservation Amount (kg)</Label>
+          <Input id="reservation-amount" type="number" min="1" max={availableStock} defaultValue="1" />
+          <p className="text-xs text-muted-foreground">Maximum {availableStock}kg available for reservation</p>
         </div>
         <div className="flex flex-col gap-2">
-          <Button onClick={onClose}>
-            Join Queue
-          </Button>
+          <Button onClick={onClose}>Join Queue</Button>
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
@@ -167,6 +172,14 @@ function QueueDialog({ product, onClose }: QueueDialogProps) {
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCategory = !selectedCategory || product.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
@@ -242,16 +255,14 @@ export default function MarketplacePage() {
               <Button
                 variant={selectedCategory === category.name ? "default" : "outline"}
                 className="relative h-32 w-full overflow-hidden"
-                onClick={() => setSelectedCategory(category.name)}
+                onClick={() => setSelectedCategory(category.name === selectedCategory ? null : category.name)}
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-primary/10" />
                 <div className="relative space-y-2">
                   <span className="text-2xl">{category.icon}</span>
                   <div>
                     <div className="font-medium">{category.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {category.count} items
-                    </div>
+                    <div className="text-xs text-muted-foreground">{category.count} items</div>
                   </div>
                 </div>
               </Button>
@@ -270,91 +281,84 @@ export default function MarketplacePage() {
           </Button>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {products.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-lg"
             >
-              <div className="aspect-square overflow-hidden">
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-              </div>
-              <div className="p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <Badge variant="secondary" className="bg-primary/10">
-                    {product.category}
-                  </Badge>
-                  {product.badge && (
-                    <Badge variant="default" className="bg-primary text-primary-foreground">
-                      {product.badge}
+              <Card className="group overflow-hidden transition-all hover:shadow-lg">
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                <CardContent className="p-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <Badge variant="secondary" className="bg-primary/10">
+                      {product.category}
                     </Badge>
-                  )}
-                </div>
-                <h3 className="mb-1 text-lg font-semibold tracking-tight">
-                  {product.name}
-                </h3>
-                <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
-                  {product.description}
-                </p>
-                <div className="mb-3 space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-1">
-                      <Sprout className="h-4 w-4 text-primary" />
-                      <span>{product.farmName}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4 text-primary" />
-                      <span>
-                        {Math.ceil(
-                          (new Date(product.harvestDate).getTime() - new Date().getTime()) /
-                            (1000 * 60 * 60 * 24)
-                        )}{" "}
-                        days
-                      </span>
-                    </div>
+                    {product.badge && (
+                      <Badge variant="default" className="bg-primary text-primary-foreground">
+                        {product.badge}
+                      </Badge>
+                    )}
                   </div>
-                  <div className="space-y-1">
+                  <h3 className="mb-1 text-lg font-semibold tracking-tight">{product.name}</h3>
+                  <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{product.description}</p>
+                  <div className="mb-3 space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Reserved</span>
-                      <span className="font-medium">
-                        {product.reservedStock}/{product.totalStock} {product.unit}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <Sprout className="h-4 w-4 text-primary" />
+                        <span>{product.farmName}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <span>
+                          {Math.ceil(
+                            (new Date(product.harvestDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+                          )}{" "}
+                          days
+                        </span>
+                      </div>
                     </div>
-                    <Progress
-                      value={(product.reservedStock / product.totalStock) * 100}
-                      className="h-1"
-                    />
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Reserved</span>
+                        <span className="font-medium">
+                          {product.reservedStock}/{product.totalStock} {product.unit}
+                        </span>
+                      </div>
+                      <Progress value={(product.reservedStock / product.totalStock) * 100} className="h-1" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="text-lg font-bold">
-                      ${product.price}/{product.unit}
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="text-lg font-bold">
+                        ${product.price}/{product.unit}
+                      </div>
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Users className="mr-1 h-3 w-3" />
+                        {product.queueCount} in queue
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Users className="mr-1 h-3 w-3" />
-                      {product.queueCount} in queue
-                    </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button>Join Queue</Button>
+                      </DialogTrigger>
+                      <QueueDialog
+                        product={product}
+                        onClose={() => {
+                          // Handle queue join
+                        }}
+                      />
+                    </Dialog>
                   </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Join Queue</Button>
-                    </DialogTrigger>
-                    <QueueDialog
-                      product={product}
-                      onClose={() => {
-                        // Handle queue join
-                      }}
-                    />
-                  </Dialog>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </motion.div>
           ))}
         </div>
@@ -364,9 +368,7 @@ export default function MarketplacePage() {
       <section className="border-t bg-card/50 py-12 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="mb-4 text-2xl font-bold tracking-tight">
-              Get Harvest Notifications
-            </h2>
+            <h2 className="mb-4 text-2xl font-bold tracking-tight">Get Harvest Notifications</h2>
             <p className="mb-6 text-muted-foreground">
               Subscribe to receive updates about upcoming harvests and queue openings
             </p>
@@ -380,3 +382,4 @@ export default function MarketplacePage() {
     </div>
   )
 }
+

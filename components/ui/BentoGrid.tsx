@@ -1,16 +1,6 @@
 "use client"
 
-import {
-  CloudSun,
-  DropletsIcon as Drop,
-  Leaf,
-  RotateCcw,
-  Satellite,
-  Sun,
-  Thermometer,
-  Waves,
-  Wind
-} from "lucide-react"
+import { CloudSun, DropletsIcon as Drop, Leaf, RotateCcw, Satellite, Sun, Thermometer, Waves, Wind } from "lucide-react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
@@ -33,20 +23,20 @@ export default function FarmAnalyticsGrid() {
               ))}
             </div>
             <div className="space-y-4">
-            <h1 className="text-green-600 dark:text-white text-4xl md:text-5xl font-bold tracking-tight">
-                AI-Powered Farming Insights
-            </h1>
+              <h1 className="text-green-600 dark:text-white text-4xl md:text-5xl font-bold tracking-tight">
+                Keep Track of Your Fields with Advanced Suggestions
+              </h1>
 
               <p className="text-xl text-muted-foreground">
-                Optimize your crops with real-time weather analysis and smart rotation planning
+                Simplify crop management with easy data entry through manual inputs, images, or automated calls. Receive
+                real-time notifications in your local language with recommendations and alerts based on climate
+                conditions, ensuring your crops thrive.
               </p>
             </div>
             <div>
-                <Link href="/dashboard">
-                  <BubbleButton>
-                    Get Started
-                  </BubbleButton>
-                </Link>
+              <Link href="/fields">
+                <BubbleButton>Get Started</BubbleButton>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -85,63 +75,57 @@ export default function FarmAnalyticsGrid() {
               </div>
             </div>
           </CardContent>
-          <div className="flex items-center justify-center text-center">
+          <div className="ml-6 mt-3">
             <Link href="/weather">
-              <BubbleButton>
-                Weather Forecast
-              </BubbleButton>
+              <BubbleButton>Weather Forecast</BubbleButton>
             </Link>
           </div>
         </Card>
 
         {/* Marketplace card */}
         <Card className="md:col-span-3 group hover:shadow-lg transition-all duration-300 bg-card/50">
-        <CardContent className="p-8 grid md:grid-cols-2 gap-8">
+          <CardContent className="p-8 grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
-            <div className="p-3 rounded-lg bg-primary/10 w-fit">
+              <div className="p-3 rounded-lg bg-primary/10 w-fit">
                 <RotateCcw className="w-8 h-8 text-primary" />
-            </div>
-            <div>
+              </div>
+              <div>
                 <h2 className="text-3xl font-bold tracking-tight mb-3">Marketplace</h2>
-                <p className="mt-2 text-muted-foreground text-lg">
-                Farm to Table without any Middlemen
-                </p>
+                <p className="mt-2 text-muted-foreground text-lg">Farm to Table without any Middlemen</p>
                 <p className="mt-4 text-muted-foreground text-lg">
-                Maximised Profits for Farmers Minimised Expenditure and Minimised Expenditure for Customers
+                  Maximised Profits for Farmers Minimised Expenditure and Minimised Expenditure for Customers
                 </p>
-            </div>
+              </div>
             </div>
             <Card>
-            <CardHeader>
+              <CardHeader>
                 <CardTitle>Top Sellers</CardTitle>
-            </CardHeader>
-            <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-4">
-                {[
-                    { item: "Premium Seeds", price: "$100" },
-                    { item: "Irrigation Equipment", price: "$500" },
-                ].map((product, i) => (
+                  {[
+                    { item: "Premium Seeds", price: "₹120" },
+                    { item: "Irrigation Equipment", price: "₹5000" },
+                  ].map((product, i) => (
                     <div
-                    key={i}
-                    className="flex items-center justify-between p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors"
+                      key={i}
+                      className="flex items-center justify-between p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors"
                     >
-                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3">
                         <Leaf className="w-4 h-4 text-primary" />
                         <span className="font-medium">{product.item}</span>
+                      </div>
+                      <Badge variant="outline">{product.price}</Badge>
                     </div>
-                    <Badge variant="outline">{product.price}</Badge>
-                    </div>
-                ))}
+                  ))}
                 </div>
                 {/* Go to Marketplace Button */}
-                <Link href={'/marketplace'} className="mt-6 flex justify-center">
-                    <BubbleButton>
-                        Go to Marketplace
-                    </BubbleButton>
+                <Link href={"/marketplace"} className="mt-6 flex justify-center">
+                  <BubbleButton>Go to Marketplace</BubbleButton>
                 </Link>
-            </CardContent>
+              </CardContent>
             </Card>
-        </CardContent>
+          </CardContent>
         </Card>
 
         {/* Soil Health Card */}
@@ -208,37 +192,37 @@ export default function FarmAnalyticsGrid() {
           </CardContent>
         </Card>
         <Card className="group hover:shadow-lg transition-all duration-300">
-            <CardHeader>
-                <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                    <Satellite className="w-6 h-6" />
-                </div>
-                <CardTitle>Yield Forecasting</CardTitle>
-                </div>
-                <CardDescription>AI-powered production estimates</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                    <Card className="bg-card/50">
-                    <CardContent className="p-3 flex items-center gap-2">
-                        <Sun className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-medium">Projected Yield: 1200 kg</span>
-                    </CardContent>
-                    </Card>
-                    <Card className="bg-card/50">
-                    <CardContent className="p-3 flex items-center gap-2">
-                        <Leaf className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-medium">Health Index: 85%</span>
-                    </CardContent>
-                    </Card>
-                </div>
-                <div className="space-x-4">
-                    <Badge variant="secondary">Harvest Predictions</Badge>
-                    <Badge variant="secondary">AI Analysis</Badge>
-                </div>
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Satellite className="w-6 h-6" />
+              </div>
+              <CardTitle>Yield Forecasting</CardTitle>
             </div>
-            </CardContent>
+            <CardDescription>AI-powered production estimates</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-2">
+                <Card className="bg-card/50">
+                  <CardContent className="p-3 flex items-center gap-2">
+                    <Sun className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">Projected Yield: 1200 kg</span>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50">
+                  <CardContent className="p-3 flex items-center gap-2">
+                    <Leaf className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">Health Index: 85%</span>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="space-x-4">
+                <Badge variant="secondary">Harvest Predictions</Badge>
+                <Badge variant="secondary">AI Analysis</Badge>
+              </div>
+            </div>
+          </CardContent>
         </Card>
         {/* Crop Rotation Card */}
         <Card className="md:col-span-3 group hover:shadow-lg transition-all duration-300">
@@ -285,3 +269,4 @@ export default function FarmAnalyticsGrid() {
     </section>
   )
 }
+
